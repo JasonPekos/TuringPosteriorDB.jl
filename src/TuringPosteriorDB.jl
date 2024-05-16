@@ -1,5 +1,6 @@
 module TuringPosteriorDB
 
-# Write your package code here.
+export hello_wrold
+include("helper-functions/test-package-setup.jl")
 
 end
