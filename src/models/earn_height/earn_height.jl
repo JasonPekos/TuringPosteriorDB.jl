@@ -6,5 +6,3 @@ using Turing, LinearAlgebra
   
   earn ~ MvNormal(beta[1] .+ beta[2] .* height, sigma^2 * I)
 end
-
-# can you see me git?
