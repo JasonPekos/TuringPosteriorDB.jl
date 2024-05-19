@@ -17,3 +17,8 @@ This function takes a posterior identifier, e.g. `Rate_1_data-Rate_1_model`, and
 \* the catch here is that I want to change the original `Stan`PDB repo for this project, adding a subject to the posterior info `.json` files that tells me
 what data the models actually use (some models use only part of a larger dataset, e.g. `earnings`). When I do this, I'll change `get_data` to filter the data
 to only what I want, so that model fitting works for all models.
+
+
+## Testing
+
+Nothing yet
