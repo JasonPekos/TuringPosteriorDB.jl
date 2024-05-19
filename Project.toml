@@ -3,6 +3,10 @@ uuid = "ac896df5-8883-4c42-b055-604fc742cf6a"
 authors = ["Jason-Pekos"]
 version = "1.0.0-DEV"
 
+[deps]
+PosteriorDB = "1c4bc282-d2f5-44f9-b6d1-8c4424a23ad4"
+TuringBenchmarking = "0db1332d-5c25-4deb-809f-459bc696f94f"
+
 [compat]
 julia = "1.6.7"
 
