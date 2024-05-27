@@ -11,12 +11,23 @@ any sort of struct to handle conditioning. I don't think I fully understand the 
 
 ## Benchmarking
 
-I wrote a quick wrapper function in `src/helper-functions/benchmarking-functions.jl` that feels way too hacky to keep. But it seems to work right now for some models\*. 
+I wrote a quick wrapper function in `src/helper-functions/benchmarking-functions.jl` that feels way too hacky to keep. But it seems to work right now. 
 This function takes a posterior identifier, e.g. `Rate_1_data-Rate_1_model`, and then runs the `TuringBenchmarking.jl` suite for the corresponding Turing model. 
 
-\* the catch here is that I want to change the original `Stan`PDB repo for this project, adding a subject to the posterior info `.json` files that tells me
-what data the models actually use (some models use only part of a larger dataset, e.g. `earnings`). When I do this, I'll change `get_data` to filter the data
-to only what I want, so that model fitting works for all models.
+Also:
+
+```
+get_turing_samples("PDB_Unique_Identifier")
+```
+
+ now works, e.g.:
+
+ ```
+get_turing_samples("Rate_1_data-Rate_1_model")
+ ```
+
+will find the Turing model, find the data, fit the model with `NUTS()` (need to add some options here), 
+and then return the samples.
 
 
 ## Testing
