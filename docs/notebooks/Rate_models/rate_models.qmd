@@ -39,7 +39,6 @@ function get_data(pdb_posterior_name::String)
     data_keys = get_data_args(pdb_posterior_name)
     data_dict = PosteriorDB.load(PosteriorDB.dataset(pdb, String(dataset_name)))
 
-    data_dict
     return [data_dict[string(k)] for k in data_keys]
 end
 
