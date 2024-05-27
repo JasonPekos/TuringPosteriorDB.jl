@@ -5,6 +5,8 @@ version = "1.0.0-DEV"
 
 [deps]
 PosteriorDB = "1c4bc282-d2f5-44f9-b6d1-8c4424a23ad4"
+StanSample = "c1514b29-d3a0-5178-b312-660c88baa699"
+Turing = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
 TuringBenchmarking = "0db1332d-5c25-4deb-809f-459bc696f94f"
 
 [compat]

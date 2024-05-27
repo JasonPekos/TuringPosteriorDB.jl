@@ -1,0 +1,158 @@
+---
+title: Bayesian Rate Models
+engine: julia
+---
+
+```{julia}
+#| echo: false
+#| output: false
+using Pkg;
+Pkg.instantiate();
+```
+
+```{julia}
+#| echo: false
+#| output: false
+
+# REPLACE THIS WITH A CALL TO TuringPosteriorDB.jl WHEN THE HELPER FUNCTIONS ARE MORE DEVELOPED 
+using TuringBenchmarking
+using PosteriorDB
+using Pkg
+using DataFrames
+
+function method_argnames(m::Method)
+    argnames = ccall(:jl_uncompress_argnames, Vector{Symbol}, (Any,), m.slot_syms)
+    isempty(argnames) && return argnames
+    return argnames[1:m.nargs]
+end
+
+function get_data_args(pdb_posterior_name::String)
+    _, model_name = split(pdb_posterior_name, "-", limit = 2)
+    model_fun = @eval $(Symbol(model_name))
+    method_argnames(collect(methods(model_fun))[1])[2:end]
+end
+
+function get_data(pdb_posterior_name::String)
+    # Gets the dataset that the model is fit on
+    pdb = PosteriorDB.database()
+    dataset_name, model_name = split(pdb_posterior_name, "-")
+    data_keys = get_data_args(pdb_posterior_name)
+    data_dict = PosteriorDB.load(PosteriorDB.dataset(pdb, String(dataset_name)))
+
+    data_dict
+    return [data_dict[string(k)] for k in data_keys]
+end
+
+
+function smush_reference_posterior(ref_post::DataFrame)
+    # PosteriorDB has returns a DF with each column being a variable, 
+    # and each row being an entire *chain*. This smushes all the chains together to 
+    # make each row a *sample*
+    DataFrame([vcat(ref_post[!, c]...) for c in names(ref_post)], names(ref_post))
+end
+
+function get_reference_draws(pdb_model_name::String, smush::Bool=true)
+    # PDB names models like this: "dataset_name-stan_file_name"
+    # (Different models often share datasets)
+    # Returns a dataset of reference posterior draws for e.g. plotting.
+    pdb = PosteriorDB.database()
+    post = PosteriorDB.posterior(pdb, pdb_model_name)
+    try 
+        df = DataFrame(PosteriorDB.load(PosteriorDB.reference_posterior(post)))
+    catch 
+        @error "Warning - No Posterior Draws Found. Check to make sure that the posterior is spelled correctly, and that
+            reference draws exist for this model in pdb."
+        return nothing
+    end
+    smush ? smush_reference_posterior(df) : df
+end
+
+
+```
+
+
+
+## Original Reference:
+
+These models are taken from [*Bayesian cognitive modeling: A practical course*](https://psycnet.apa.org/record/2014-14454-000) by Lee and Wagenmakers. 
+
+
+## Modelling A Single Rate - `Rate_1_Model`
+
+The data here are pretty simple:
+
+```{julia}
+r1d = get_data("Rate_1_data-Rate_1_model")
+```
+
+We have some known number of "hits" `k` in some known number of "attempts" 'n'. This is a pretty natural description of a Binomial distribution, so we model
+our problem as simply inference of $\theta$ in a $\operatorname{Binomial}(n, \theta)$, making our entire observation model just:
+
+$$ k \sim \operatorname{Binomial}(n, \theta).$$
+
+We place a uniform prior on our rate $\theta$:
+
+$$ \theta \sim \operatorname{Binomial}(n, \theta).$$
+
+For completness, the corresponding DAG here is:
+
+```{dot}
+//| fig-height: 3
+digraph {
+    graph [size="2, 2"]
+    // Node settings
+    node [shape=circle, style=filled, fillcolor=gray];
+    n [label="n"];
+    k [label="k"];
+    
+    node [shape=circle, style="", fillcolor=white];
+    theta [label="θ"];
+
+    // Edges
+    theta -> k;
+    n -> k;
+}
+```
+
+The Turing and Stan models are given as:
+
+::: {.panel-tabset group="language"}
+### Turing
+```{julia}
+#| output: false
+using Turing
+
+@model function Rate_1_model(n, k)
+    theta ~ Beta(1, 1)
+    k ~ Binomial(n, theta)
+end
+```
+
+### Stan
+```{stan}
+#| output: false
+// Inferring a Rate
+data {
+  int<lower=1> n;
+  int<lower=0> k;
+}
+parameters {
+  real<lower=0, upper=1> theta;
+}
+model {
+  // Prior Distribution for Rate Theta
+  theta ~ beta(1, 1);
+  
+  // Observed Counts
+  k ~ binomial(n, theta);
+}
+```
+:::
+
+
+No reference draws exist for this model, so we need to sample the corresponding Stan model:
+
+```{julia}
+turing_samples = sample(Rate_1_model(r1d...), NUTS(), 1000)
+
+```
