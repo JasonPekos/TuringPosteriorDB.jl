@@ -1,4 +1,5 @@
-using Turing, LinearAlgebra
+using Turing
+using LinearAlgebra
 
 @model function log10earn_height(N, earn, height)
     log10_earn = log10.(earn)

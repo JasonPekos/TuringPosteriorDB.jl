@@ -1,4 +1,6 @@
-using Turing, StatsBase
+using Turing
+using StatsBase
+using LinearAlgebra
 
 @model function logearn_interaction_z(N, earn, height, male)
     log_earn = log.(earn) # Transforms

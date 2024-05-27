@@ -1,4 +1,5 @@
 using Turing 
+using LinearAlgebra
 
 @model function logearn_interaction(N, earn, height, male)
     log_earn = log.(earn)

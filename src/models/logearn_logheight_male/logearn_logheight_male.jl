@@ -1,4 +1,5 @@
 using Turing 
+using LinearAlgebra
 
 @model function logearn_logheight_male(N, earn, height, male)
     log_earn = log.(earn)
