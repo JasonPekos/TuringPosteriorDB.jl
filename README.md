@@ -29,6 +29,13 @@ get_turing_samples("Rate_1_data-Rate_1_model")
 will find the Turing model, find the data, fit the model with `NUTS()` (need to add some options here), 
 and then return the samples.
 
+As does the equivalent Stan function:
+
+```
+get_stan_samples("Rate_1_data-Rate_1_model")
+ ```
+
+
 
 ## Testing
 
