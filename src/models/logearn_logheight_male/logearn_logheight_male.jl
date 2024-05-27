@@ -7,5 +7,5 @@ using Turing
     beta ~ filldist(Turing.Flat(), 4)
     sigma ~ Turing.FlatPos(0)
 
-    log_earn ~ Normal(beta[1] + beta[2] * log_height + beta[3] * male, sigma)
+    log_earn ~ MvNormal(beta[1] .+ beta[2] .* log_height .+ beta[3] .* male, sigma^2*I)
 end

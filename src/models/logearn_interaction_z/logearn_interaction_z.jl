@@ -8,5 +8,5 @@ using Turing, StatsBase
     beta ~ filldist(Turing.Flat(), 4) # Prior
     sigma ~ Turing.FlatPos(0)
 
-    log_earn ~ normalize(beta[1] + beta[2] * z_height + beta[3] * male + beta[4] * inter, sigma)
+    log_earn ~ MvNormal(beta[1] .+ beta[2] .* z_height .+ beta[3] .* male .+ beta[4] .* inter, sigma^2*I)
 end
