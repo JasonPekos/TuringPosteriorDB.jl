@@ -2,6 +2,8 @@ using TuringBenchmarking
 using PosteriorDB
 using StanSample
 using Pkg
+using OrderedCollections
+using DataFrames
 
 
 
@@ -67,7 +69,7 @@ function get_data(pdb_posterior_name::AbstractString)
     data_keys = get_data_args(pdb_posterior_name)
     data_dict = PosteriorDB.load(PosteriorDB.dataset(pdb, String(dataset_name)))
 
-    return [data_dict[string(k)] for k in data_keys]
+    return OrderedDict(string(k) => data_dict[string(k)] for k in data_keys)
 end
 
 
@@ -103,11 +105,25 @@ function get_turing_samples(pdb_posterior_name::AbstractString)
     model_file = joinpath(model_path, model_name * ".jl")
     include(model_file)
 
-    conditioned_model = @invokelatest getfield(Main, Symbol(model_name))(data...) 
+    conditioned_model = @invokelatest getfield(Main, Symbol(model_name))(data.vals...) 
     sampler = @invokelatest NUTS()
     samples = @invokelatest sample(conditioned_model, sampler, 1000)
 
     return samples
+end
+
+function get_stan_samples(pdb_posterior_name::AbstractString)
+    pdb = PosteriorDB.database()
+    _, model_name = split(pdb_posterior_name, "-")
+    model_imp = PosteriorDB.implementation(PosteriorDB.model(pdb, String(model_name)), "stan")
+
+    stan_string = PosteriorDB.load(model_imp)
+
+    sm = SampleModel(model_name, stan_string)
+    data_dict = Dict(get_data(pdb_posterior_name))
+    stan_sample(sm; data = data_dict)
+
+    return read_samples(sm, :mcmcchains)
 end
  
 function benchmark_turing(pdb_model_str::AbstractString)
