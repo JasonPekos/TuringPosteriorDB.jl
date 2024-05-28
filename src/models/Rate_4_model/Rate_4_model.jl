@@ -7,7 +7,7 @@ using Turing
 
     k ~ Binomial(n, theta)
 
-    postpredk := rand(Binomial(n, Float64(theta)))
-    priorpredk := rand(Binomial(n, Float64(thetaprior)))
+    postpredk := rand(Binomial(n, theta))
+    priorpredk := rand(Binomial(n, thetaprior))
 end
 
