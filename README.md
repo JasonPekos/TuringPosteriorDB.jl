@@ -46,11 +46,8 @@ Nothing yet
 
 | Model           | Notes           |
 |-----------------|-----------------|
-| logearn_height  | Broken because Turing doesn't let you transform parameters inside a model! |
-| log10earn_height    | Broken because Turing doesn't let you transform parameters inside a model!    |
 | Rate_5_model    | AD Broken for posterior predictive checks |
 | Rate_4_model    | AD Broken for posterior predictive checks |
-| logearn_height_male    |  Broken because Turing doesn't let you transform parameters inside a model! |
 
 
 Actually all the transformed parameter models are broken. 
