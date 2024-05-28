@@ -137,8 +137,8 @@ function benchmark_turing(pdb_model_str::AbstractString)
     # Get actual model
     model_file = joinpath(model_path, model_name * ".jl")
     include(model_file)
+
     conditioned_model = getfield(Main, Symbol(model_name))(data.vals...) 
-    
     # Run Turing benchmarking suite
     run(make_turing_suite(conditioned_model))
 end
