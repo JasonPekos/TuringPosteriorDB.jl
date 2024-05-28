@@ -37,10 +37,7 @@ Turing model.
 function get_data_args(pdb_posterior_name::AbstractString)
     _, model_name = split(pdb_posterior_name, "-", limit = 2)
     
-    # Check if the method is defined
-    if !isdefined(Main, Symbol(model_name))
-        load_turing_callable_no_env!(model_name)
-    end
+    load_turing_callable_no_env!(model_name)
 
     model_fun = getfield(Main, Symbol(model_name))
     method_argnames(collect(methods(model_fun))[1])[2:end]
@@ -140,11 +137,20 @@ function benchmark_turing(pdb_model_str::AbstractString)
     # Get actual model
     model_file = joinpath(model_path, model_name * ".jl")
     include(model_file)
-
-    # In practice I need to select the columns here for many models. But need to update PDB first ...
     conditioned_model = getfield(Main, Symbol(model_name))(data.vals...) 
     
     # Run Turing benchmarking suite
     run(make_turing_suite(conditioned_model))
 end
 
+# function check_pairs(pdb_model_name; params)
+
+# end
+
+
+# function giant_diagnostics_plot(pdb_model_name; params)
+#     turing_chains = get_turing_samples(pdb_model_name)
+#     stan_chains = get_stan_samples(pdb_model_name)
+
+
+# end
