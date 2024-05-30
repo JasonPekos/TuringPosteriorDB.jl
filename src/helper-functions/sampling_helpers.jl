@@ -21,15 +21,17 @@ function get_turing_samples(pdb_posterior_name::AbstractString)
 
     # Get data, get path
     data = get_data(pdb_posterior_name)
-    model_path = joinpath("src/models", model_name)
+    model_path = joinpath(get_db_dir(), model_name)
 
     # Activate path of model
     load_env!(model_name)
 
     # Get actual model
     model_file = joinpath(model_path, model_name * ".jl")
+    @show model_file
     include(model_file)
 
+    # Condition & Sample:
     conditioned_model = @invokelatest getfield(Main.TuringPosteriorDB, Symbol(model_name))(data.vals...) 
     sampler = @invokelatest NUTS()
     samples = @invokelatest sample(conditioned_model, sampler, 1000)

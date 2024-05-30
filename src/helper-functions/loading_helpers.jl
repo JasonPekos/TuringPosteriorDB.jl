@@ -41,18 +41,20 @@ function method_argnames(m::Method)
 end
 
 function load_env!(model_name::AbstractString)
-    model_path = joinpath("src/models", model_name)
+    model_path = joinpath(get_db_dir(), model_name)
     push!(Base.LOAD_PATH, model_path)
     Pkg.instantiate()
+    @info "Environment stack updated to: " Base.LOAD_PATH
 end
 
 function unload_env!()
     pop!(Base.LOAD_PATH)
     Pkg.instantiate()
+    @info "Environment stack updated to: " Base.LOAD_PATH
 end
 
 function load_turing_callable(model_name::AbstractString)
-    model_path = joinpath("src/models", model_name)
+    model_path = joinpath(get_db_dir(), model_name)
     include(joinpath(model_path, model_name * ".jl"))
 end
 
