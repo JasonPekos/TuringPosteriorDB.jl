@@ -4,5 +4,5 @@ using Turing, LinearAlgebra
     beta ~ filldist(Turing.Flat(), 2)
     sigma ~ Turing.FlatPos(0)
 
-    watched ~ MvNormal(beta[1] + beta[2]*encouraged, sigma^2*I)
+    watched ~ MvNormal(beta[1] .+ beta[2] .* encouraged, sigma^2*I)
 end
