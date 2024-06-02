@@ -48,6 +48,8 @@ Nothing yet
 |-----------------|-----------------|
 | Rate_5_model    | AD Broken for posterior predictive checks |
 | Rate_4_model    | AD Broken for posterior predictive checks |
+| Kilpisjarvi    | Check for divergences and correctness -- large variance in sample mean for both Stan and Turing |
+
 
 
 Actually all the transformed parameter models are broken. 
