@@ -11,7 +11,7 @@ using FillArrays
 
     mu_b ~ Normal(0, 1)
     sigma_b ~ Uniform(0, 100)
-    b ~ MvNormal(fill(mu_b, n_scenarios), sigma_b^2 .* I)
+    b ~ MvNormal(fill(10 * mu_b, n_scenarios), sigma_b^2 .* I)
 
     y_hat := a[group_id] .+ b[scenario_id]
 
