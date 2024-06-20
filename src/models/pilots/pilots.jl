@@ -7,7 +7,7 @@ using FillArrays
 
     mu_a ~ Normal(0, 1)
     sigma_a ~ Uniform(0, 100)
-    a ~ MvNormal(fill(mu_a, n_groups), sigma_a^2 .* I)
+    a ~ MvNormal(fill(10 * mu_a, n_groups), sigma_a^2 .* I)
 
     mu_b ~ Normal(0, 1)
     sigma_b ~ Uniform(0, 100)

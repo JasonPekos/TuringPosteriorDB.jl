@@ -1,6 +1,6 @@
 using Turing, LinearAlgebra
 
-@model function earn_height(earn, height)
+@model function earn_height(N, earn, height)
   beta ~ filldist(Turing.Flat(), 2)
   sigma ~ Turing.FlatPos(0)
   

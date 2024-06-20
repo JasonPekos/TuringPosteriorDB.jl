@@ -1,7 +1,6 @@
 using Turing
 using LinearAlgebra
 
-
 @model function kilpisjarvi(N, x, y, xpred, pmualpha, psalpha, pmubeta, psbeta)
     alpha ~ Normal(pmualpha, psalpha)
     beta ~ Normal(pmubeta, psbeta)
