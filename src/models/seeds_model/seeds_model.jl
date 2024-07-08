@@ -6,7 +6,7 @@ using FillArrays
     alpha1 ~ Normal(0.0, 1.0e3)
     alpha2 ~ Normal(0.0, 1.0e3)
     alpha12 ~ Normal(0.0, 1.0e3)
-    tau ~ Gamma(1.0e-3, 1.0e-3)
+    tau ~ Gamma(1.0e3, 1.0e-3)
     sigma := 1.0 / sqrt(tau)
 
     # Use UniformScaling because data already contains `I`

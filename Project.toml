@@ -4,6 +4,8 @@ authors = ["Jason-Pekos"]
 version = "1.0.0-DEV"
 
 [deps]
+DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 PosteriorDB = "1c4bc282-d2f5-44f9-b6d1-8c4424a23ad4"
