@@ -4,47 +4,45 @@ using DifferentialEquations
 
 # Define Diffeq in DifferentialEquations form
 function lotka_volterra!(dz, z, p, t)
-    alpha, beta, gamma, delta = p
-    u, v = z
-
-    # Evaluate differential equations.
-    dz[1] = (alpha - beta * v) * u # prey
-    dz[2] = (- gamma + delta * u) * v # predator
-
+    dz[1] = (p[1] - p[2] * z[2]) * z[1] # prey
+    dz[2] = (-p[3] + p[4] * z[1]) * z[2] # predator
     return nothing
 end
 
 
-# Define Turing Model
+# Placeholder ODE
+prob = ODEProblem(lotka_volterra!, [35.0, 5.0], (0.0, 20.0), [1.0, 0.05, 1.0, 0.05])
+solve(prob)
+
 @model function lotka_volterra(N, ts, y_init, y)
     theta ~ arraydist([
-        Truncated(Normal(1, 0.5), 0, Inf),
-        Truncated(Normal(0.05, 0.05), 0, Inf),
-        Truncated(Normal(1, 0.5), 0, Inf),
-        Truncated(Normal(0.05, 0.05), 0, Inf)
+        truncated(Normal(1, 0.5), lower = 0),
+        truncated(Normal(0.05, 0.05), lower = 0),
+        truncated(Normal(1, 0.5), lower = 0),
+        truncated(Normal(0.05, 0.05), lower = 0)
     ])
 
     sigma ~ filldist(LogNormal(-1, 1), 2)
     z_init ~ filldist(LogNormal(log(10), 1), 2)
 
-    prob = ODEProblem(lotka_volterra!, z_init, (0, ts[end]), theta)
-    z = solve(prob, DP5(), saveat = ts)
-
+    # Create trajectory for this parameter set
+    
+    z = solve(prob, DP5(); p = theta, tspan = (0, ts[end]), u0 = z_init, saveat = ts)
+    # Include trajectories in chain to match Stan
     z1 := z[1, :]
     z2 := z[2, :]
 
     # If the solver failed, reject (taken roughly from DiffEqBayes.jl)
-    if length(z[1,:]) < N || any(z .< 0)
+    if z.retcode != :Success || any(z .< 0)
         Turing.DynamicPPL.acclogp!!(__varinfo__, -Inf)
         return
     end
 
+    # Initial Condition Likelihood (y_init is observed)
     for i in 1:2
         y_init[i] ~ LogNormal(log(z_init[i]), sigma[i])
         y[:, i] ~ MvLogNormal(log.(z[i, :]), sigma[i]^2 .* I)
     end
 
-    # Generated Quantities:
-    # Todo, it's a bit finicky because the rand() calls break
-    # autodiff, so not yet set on how to do this inside the model.
+    # Missing: Generated Quantities
 end
