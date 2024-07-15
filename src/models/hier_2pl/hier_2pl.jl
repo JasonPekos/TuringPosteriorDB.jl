@@ -25,3 +25,5 @@ using FillArrays
 
 #     y .~ BernoulliLogit.(alpha[ii] .* (theta[jj] .- beta[ii]))
 # end
+
+
