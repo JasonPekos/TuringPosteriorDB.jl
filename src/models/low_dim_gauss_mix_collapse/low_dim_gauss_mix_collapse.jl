@@ -3,7 +3,7 @@ using LogExpFunctions
 using LinearAlgebra
 using FillArrays
 
-@model function low_dim_gauss_mix(N, y)
+@model function low_dim_gauss_mix_collapse(N, y)
     mu ~ MvNormal(Fill(0, 2), 4 .* I)
     sigma ~ arraydist([truncated(Normal(0, 2), lower = 0) for _ in 1:2])
     theta ~ Beta(5, 5)
