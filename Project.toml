@@ -3,25 +3,5 @@ uuid = "ac896df5-8883-4c42-b055-604fc742cf6a"
 authors = ["Jason-Pekos"]
 version = "1.0.0-DEV"
 
-[deps]
-DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
-LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
-LogExpFunctions = "2ab3a3ac-af41-5b50-aa03-7779005ae688"
-OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
-Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
-PosteriorDB = "1c4bc282-d2f5-44f9-b6d1-8c4424a23ad4"
-StanSample = "c1514b29-d3a0-5178-b312-660c88baa699"
-StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
-StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
-Term = "22787eb5-b846-44ae-b979-8e399b8463ab"
-Turing = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
-TuringBenchmarking = "0db1332d-5c25-4deb-809f-459bc696f94f"
-
 [compat]
 julia = "1.6.7"
-
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Test"]
