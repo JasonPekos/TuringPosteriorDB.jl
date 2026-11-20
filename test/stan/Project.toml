@@ -1,0 +1,8 @@
+[deps]
+AbstractMCMC = "80f14c24-f653-4e6a-9b94-39d6b0f70001"
+AdvancedHMC = "0bf59076-c3b1-5ca4-86bd-e02cd72cde3d"
+BridgeStan = "c88b6f0a-829e-4b0b-94b7-f06ab5908f5a"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+LogDensityProblems = "6fdf6af0-433a-55f7-b3ed-c6c6e0b8df7c"
+PosteriorDB = "1c4bc282-d2f5-44f9-b6d1-8c4424a23ad4"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"

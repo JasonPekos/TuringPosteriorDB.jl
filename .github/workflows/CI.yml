@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-    tags: ['*']
   pull_request:
   workflow_dispatch:
 concurrency:
@@ -13,29 +12,20 @@ concurrency:
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 jobs:
   test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
+    name: Log-density check
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
     permissions: # needed to allow julia-actions/cache to proactively delete old caches that it has created
       actions: write
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        version:
-          - '1.10'
-          - '1.6'
-          - 'nightly'
-        os:
-          - ubuntu-latest
-        arch:
-          - x64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: julia-actions/setup-julia@v2
         with:
-          version: ${{ matrix.version }}
-          arch: ${{ matrix.arch }}
+          # The manifests under src/models are resolved for this Julia version.
+          version: '1.13'
       - uses: julia-actions/cache@v2
-      - uses: julia-actions/julia-buildpkg@v1
-      - uses: julia-actions/julia-runtest@v1
+      - name: Install the test driver's packages
+        run: julia --project=test -e 'using Pkg; Pkg.instantiate()'
+      - name: Check every model against Stan's log density
+        run: julia --project=test test/runtests.jl

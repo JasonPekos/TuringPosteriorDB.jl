@@ -39,7 +39,14 @@ get_stan_samples("Rate_1_data-Rate_1_model")
 
 ## Testing
 
-Nothing yet
+`test/runtests.jl` compares each model's log joint density with Stan's at ten points per posterior.
+A model passes when the two differ by the same constant at every point. `test/README.md` describes the check,
+and `test/known_failures.toml` lists the posteriors that don't pass yet, with the reason for each.
+
+```
+julia --project=test -e 'using Pkg; Pkg.instantiate()'
+julia --project=test test/runtests.jl
+```
 
 
 ## Notes on Models
