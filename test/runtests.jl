@@ -5,14 +5,19 @@
 #   julia --project=test test/runtests.jl eight_schools-eight_schools_centered ...
 #
 # This file reads posteriordb's data and Stan's reference values, hands them to
-# a worker process started in the models' environment (worker.jl, the only code
-# that loads Turing), and compares each posterior's status with what
-# known_failures.toml expects.
+# worker processes (worker.jl, the only code that loads Turing), and compares
+# each posterior's status with what known_failures.toml expects. Each model is
+# evaluated in the environment its own folder pins, one worker per distinct
+# environment.
 
 using JSON, PosteriorDB, Serialization, TOML, Test
+include("environments.jl")
 
 const MODELS = joinpath(dirname(@__DIR__), "src", "models")
 const REFERENCE = joinpath(@__DIR__, "reference")
+
+"A model's environment as text. Models whose folders hold the same two files share a worker."
+fingerprint(model) = read.(joinpath.(MODELS, model, ("Project.toml", "Manifest.toml")), String)
 
 # ── Stan's JSON → Julia values ──────────────────────────────────────────────
 
@@ -106,8 +111,25 @@ function main(only)
         @testset "known_failures.toml names posteriors that exist" begin
             @test isempty(setdiff(keys(expected), first.(all_posteriors)))
         end
+        @testset "every model's environment is in sync with src/models" begin
+            shared_project = TOML.parsefile(joinpath(MODELS, "Project.toml"))
+            shared_manifest = TOML.parsefile(joinpath(MODELS, "Manifest.toml"))
+            problems = reduce(vcat, [environment_problems(joinpath(MODELS, m), shared_project, shared_manifest)
+                                     for m in model_names()]; init = String[])
+            foreach(println, problems)
+            isempty(problems) || println("Run `julia scripts/sync_environments.jl` to rewrite them.")
+            @test problems == String[]
+        end
 
-        rows = run_worker(MODELS, [job(pdb, name, model) for (name, model) in todo])
+        fp = Dict(model => fingerprint(model) for model in unique(last.(todo)))
+        rows = Dict{String,Any}()
+        for f in unique(fp[model] for (_, model) in todo)
+            group = [(name, model) for (name, model) in todo if fp[model] == f]
+            model = last(first(group))
+            println("\n", length(group), " posteriors in the environment of ", model, ": ",
+                    join(imports(joinpath(MODELS, model, model * ".jl")), ", "))
+            merge!(rows, run_worker(joinpath(MODELS, model), [job(pdb, p...) for p in group]))
+        end
 
         # One line per posterior whose status is not the expected one, then one test over all of them.
         unexpected = [(name, get(expected, name, "pass"), rows[name]) for (name, _) in todo

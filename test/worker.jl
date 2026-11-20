@@ -2,7 +2,7 @@
 #
 #   julia --project=<environment> worker.jl jobs.jls results.jls
 #
-# It runs inside the models' environment, so it may load that environment's
+# It runs inside one model environment, so it may load that environment's
 # packages and the standard library and nothing else. Each job is one
 # posterior: the model's file, the data, Stan's reference points and Stan's log
 # density at them. Each result is one row of the table runtests.jl prints.

@@ -9,6 +9,19 @@
 Models are in `src/models`. Each model has it's own `manifest.toml` and `project.toml`, but is not currently wrapped in
 any sort of struct to handle conditioning. I don't think I fully understand the benefit of that yet.
 
+The per-model `Project.toml` and `Manifest.toml` are generated. `src/models/Project.toml` and its `Manifest.toml`
+hold every package any model loads, at one set of versions (Julia 1.13, Turing 0.49). `scripts/sync_environments.jl`
+writes each model's `Project.toml` from the `using` lines of its file, and cuts the shared manifest down to those
+packages and their dependencies. A model therefore installs only what it loads, and every model pins the same versions.
+
+To move to newer packages, update the shared environment, sync, and run the tests:
+
+```
+julia --project=src/models -e 'using Pkg; Pkg.update()'
+julia scripts/sync_environments.jl
+julia --project=test test/runtests.jl
+```
+
 ## Using a model
 
 Each model is a plain `@model` function whose positional arguments are named after the Stan data it takes.

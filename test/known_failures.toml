@@ -40,6 +40,7 @@
 "seeds_data-seeds_centered_model" = "`.~` with an array of distributions, which DynamicPPL 0.35 removed"
 "seeds_data-seeds_model" = "uses I without loading LinearAlgebra"
 "seeds_data-seeds_stanified_model" = "`.~` with an array of distributions, which DynamicPPL 0.35 removed"
+"soil_carbon-soil_incubation" = "the model body is a stub"
 "surgical_data-surgical_model" = "`.~` with an array of distributions, which DynamicPPL 0.35 removed"
 "wells_data-wells_daae_c_model" = "`.~` with an array of distributions, which DynamicPPL 0.35 removed"
 "wells_data-wells_dae_c_model" = "`.~` with an array of distributions, which DynamicPPL 0.35 removed"
@@ -57,9 +58,5 @@
 [names]
 "diamonds-diamonds" = "the model body is a stub"
 
-[data]
-"soil_carbon-soil_incubation" = "takes eC02mean (digit zero); the Stan data is eCO2mean, and the body is a stub"
-
 [load]
-"low_dim_gauss_mix_collapse-low_dim_gauss_mix_collapse" = "the file defines low_dim_gauss_mix, not low_dim_gauss_mix_collapse"
 "sat-hier_2pl" = "the model is commented out"

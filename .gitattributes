@@ -1,3 +1,4 @@
 # Written by tools, not by hand. GitHub folds these in a pull request's diff.
 Manifest.toml linguist-generated
 test/reference/*.json linguist-generated
+src/models/*/Project.toml linguist-generated

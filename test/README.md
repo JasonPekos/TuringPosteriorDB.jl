@@ -35,7 +35,8 @@ parameter is not, which contributes $\log 2$ per such parameter.
 | Path | What |
 |---|---|
 | `runtests.jl` | Reads posteriordb's data and the reference values, starts the worker, compares each status with `known_failures.toml`. |
-| `worker.jl` | Runs in the models' environment. Includes each model file, evaluates `logjoint` at the reference points and reports a row per posterior. |
+| `worker.jl` | Runs in a model's own environment, one process per distinct environment. Includes each model file, evaluates `logjoint` at the reference points and reports a row per posterior. |
+| `environments.jl` | Checks that each model's `Project.toml` and `Manifest.toml` match the shared ones in `src/models`. `scripts/sync_environments.jl` writes them. |
 | `reference/<posterior>.json` | Stan's side: `names`, `points` (constrained, flattened in Stan's order) and `lp` (Stan's log density at each point, all constants kept). Five points come from a short NUTS run on Stan's density and five are draws from Stan's initial-value distribution. |
 | `known_failures.toml` | The posteriors that do not pass yet, grouped by status, each with a reason. |
 | `stan/` | `stan_reference.jl` writes the reference files with BridgeStan. The tests never run it. |
@@ -61,7 +62,9 @@ fix to a model comes with the removal of its entry.
 1. Put the model in `src/models/<name>/<name>.jl`, as `@model function <name>(...)`.
    `<name>` is the posteriordb model name, and the positional arguments are
    named after the Stan data they take.
-2. If the file loads a package that `src/models/Project.toml` lacks, add it there.
-3. Write the reference values for its posteriors:
+2. If the file loads a package that `src/models/Project.toml` lacks, add it there
+   (`julia --project=src/models -e 'using Pkg; Pkg.add("Name")'`).
+3. Write the model's `Project.toml` and `Manifest.toml`: `julia scripts/sync_environments.jl`.
+4. Write the reference values for its posteriors:
    `julia --project=test/stan test/stan/stan_reference.jl`.
-4. Run the tests.
+5. Run the tests.
